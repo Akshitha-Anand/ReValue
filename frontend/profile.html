@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReValue - Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <h1>ReValue</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="create-post.html">+ Create Post</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>Profile</h2>
+    <div id="profileDetails"></div>
+    <h3>Your Posts</h3>
+    <div id="userPosts"></div>
+</div>
+
+<script>
+const user = JSON.parse(localStorage.getItem('user'));
+
+if(!user){
+    window.location.href = 'login.html';
+}
+
+document.getElementById('profileDetails').innerHTML = `
+    <p>Name: ${user.name || user.industryName}</p>
+    <p>Email: ${user.email || ''}</p>
+    <p>Phone: ${user.phone || ''}</p>
+    <p>Type: ${user.userType}</p>
+`;
+
+// Fetch user's posts
+async function fetchUserPosts() {
+    try {
+        const res = await fetch(`http://localhost:5000/api/posts/user/${user._id}`);
+        const posts = await res.json();
+        const postsDiv = document.getElementById('userPosts');
+        postsDiv.innerHTML = '';
+        posts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <h4>${post.itemName}</h4>
+                <p>Condition: ${post.condition}</p>
+                ${post.image ? `<img src="http://localhost:5000/uploads/${post.image}" />` : ''}
+            `;
+            postsDiv.appendChild(card);
+        });
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+fetchUserPosts();
+</script>
+
+</body>
+</html>

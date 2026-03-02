@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReValue - Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <h1>ReValue</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label>User Type</label>
+        <select name="userType" required>
+            <option value="">Select User Type</option>
+            <option value="individual">Individual</option>
+            <option value="collector">Collector</option>
+            <option value="industry">Industry</option>
+        </select>
+
+        <!-- Individual Fields -->
+        <div id="individualFields" style="display:none;">
+            <input type="text" name="name" placeholder="Full Name">
+            <input type="email" name="email" placeholder="Email">
+            <input type="text" name="phone" placeholder="Phone Number">
+            <input type="text" name="address" placeholder="Address">
+        </div>
+
+        <!-- Collector Fields -->
+        <div id="collectorFields" style="display:none;">
+            <input type="text" name="name" placeholder="Full Name">
+            <input type="text" name="phone" placeholder="Phone Number">
+            <select name="collectorType">
+                <option value="">Collector Type</option>
+                <option value="individual">Individual Collector</option>
+                <option value="employee">Industry Employee</option>
+            </select>
+            <input type="text" name="industry" placeholder="Industry Name (if applicable)">
+            <input type="text" name="hubLocation" placeholder="Hub Location">
+        </div>
+
+        <!-- Industry Fields -->
+        <div id="industryFields" style="display:none;">
+            <input type="text" name="industryName" placeholder="Industry Name">
+            <input type="text" name="registrationNumber" placeholder="Registration Number">
+            <input type="text" name="address" placeholder="Address">
+        </div>
+
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<script>
+const userTypeSelect = document.querySelector('select[name="userType"]');
+const individualFields = document.getElementById('individualFields');
+const collectorFields = document.getElementById('collectorFields');
+const industryFields = document.getElementById('industryFields');
+
+userTypeSelect.addEventListener('change', () => {
+    individualFields.style.display = 'none';
+    collectorFields.style.display = 'none';
+    industryFields.style.display = 'none';
+    if(userTypeSelect.value === 'individual') individualFields.style.display = 'block';
+    if(userTypeSelect.value === 'collector') collectorFields.style.display = 'block';
+    if(userTypeSelect.value === 'industry') industryFields.style.display = 'block';
+});
+
+const registerForm = document.getElementById('registerForm');
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(registerForm);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const res = await fetch('http://localhost:5000/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        alert(result.message);
+        if(res.ok) window.location.href = 'login.html';
+    } catch(err) {
+        console.error(err);
+    }
+});
+</script>
+
+</body>
+</html>

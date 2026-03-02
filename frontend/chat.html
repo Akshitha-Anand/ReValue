@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>ReValue Chat</title>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+<style>
+
+body{
+font-family: Arial;
+background:#e8f5e9;
+}
+
+#chatBox{
+height:400px;
+overflow:auto;
+border:1px solid #ccc;
+padding:10px;
+background:white;
+}
+
+</style>
+
+</head>
+<body>
+
+<h2>ReValue Chat</h2>
+
+<div id="chatBox"></div>
+
+<input id="messageInput" placeholder="Type message">
+
+<button onclick="sendMessage()">Send</button>
+
+<script>
+
+const socket = io("http://localhost:5000");
+
+const senderId = localStorage.getItem("userId");
+
+const receiverId = localStorage.getItem("chatUserId");
+
+
+socket.emit("registerUser", senderId);
+
+
+socket.on("receiveMessage", data => {
+
+    addMessage(data.message);
+
+});
+
+
+function sendMessage(){
+
+    const message =
+    document.getElementById("messageInput").value;
+
+    socket.emit("sendMessage", {
+
+        senderId,
+        receiverId,
+        message
+
+    });
+
+    addMessage(message);
+
+}
+
+
+function addMessage(message){
+
+    const div = document.createElement("div");
+
+    div.innerText = message;
+
+    document.getElementById("chatBox")
+    .appendChild(div);
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReValue - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <h1>ReValue</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="create-post.html">+ Create Post</a>
+        <a href="profile.html">Profile</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>Waste Feed</h2>
+    
+    <div>
+        <button onclick="filterPosts('all')">All</button>
+        <button onclick="filterPosts('plastic')">Plastic</button>
+        <button onclick="filterPosts('paper')">Paper</button>
+        <button onclick="filterPosts('ewaste')">E-Waste</button>
+    </div>
+
+    <div id="posts"></div>
+</div>
+<div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Type a message..." />
+    <input type="file" id="chatImage" />
+    <button id="sendChatBtn">Send</button>
+</div>
+<select id="role">
+<option value="individual">Individual</option>
+<option value="collector">Collector</option>
+<option value="industry">Industry</option>
+</select>
+<!-- FEED -->
+<section class="features" id="feed">
+    <div class="card plastic" data-post-id="POST_ID_1" data-user-id="COLLECTOR_ID_1">
+        <h3>Plastic Bottles</h3>
+        <p>Reusable · 15 items</p>
+        <button class="chatBtn">Chat</button>
+    </div>
+    <img src="http://localhost:5000/uploads/post.jpg">
+<h3>Plastic Bottles</h3>
+<p>Condition: Good</p>
+<p>Price: ₹50</p>
+<p>Seller: Akshitha</p>
+<button>Chat Collector</button>
+
+    <div class="card paper" data-post-id="POST_ID_2" data-user-id="COLLECTOR_ID_2">
+        <h3>Old Newspapers</h3>
+        <p>Recyclable · 10kg</p>
+        <button class="chatBtn">Chat</button>
+    </div>
+
+    <div class="card ewaste" data-post-id="POST_ID_3" data-user-id="COLLECTOR_ID_3">
+        <h3>Broken Keyboard</h3>
+        <p>E-Waste · 1 item</p>
+        <button class="chatBtn">Chat</button>
+    </div>
+</section>
+<!-- CHAT MODAL -->
+<div class="modal" id="chatModal">
+    <div class="modal-content">
+        <h3 id="chatWith">Chat</h3>
+        <div id="chatMessages" class="messages"></div>
+        <input type="text" id="chatInput" placeholder="Type a message..." />
+        <button id="sendChatBtn">Send</button>
+        <button onclick="closeChat()">Close</button>
+    </div>
+</div>
+<script src="script.js"></script>
+<script>
+    // Fetch posts from backend
+    async function fetchPosts() {
+        try {
+            const res = await fetch('http://localhost:5000/api/posts');
+            const data = await res.json();
+            displayPosts(data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function displayPosts(posts) {
+        const postsDiv = document.getElementById('posts');
+        postsDiv.innerHTML = '';
+        posts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = `card ${post.category}`;
+            card.innerHTML = `
+                <h3>${post.itemName}</h3>
+                <p>Condition: ${post.condition}</p>
+                <p>Category: ${post.category}</p>
+                ${post.image ? `<img src="http://localhost:5000/uploads/${post.image}" />` : ''}
+            `;
+            postsDiv.appendChild(card);
+        });
+    }
+
+    function filterPosts(category) {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            if(category === 'all' || card.classList.contains(category)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    fetchPosts();
+</script>
+
+</body>
+</html>
