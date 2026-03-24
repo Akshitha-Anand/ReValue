@@ -4,9 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { Send, CheckCircle, Clock, MapPin, Search, Bell } from 'lucide-react';
 import { io } from 'socket.io-client';
 import axios from 'axios';
+import API_BASE_URL from '../api';
 import './Chat.css';
 
-const socket = io('http://localhost:5000');
+const socket = io(API_BASE_URL);
+
 
 const Chat = () => {
     const { user } = useAuth();
@@ -29,8 +31,9 @@ const Chat = () => {
 
         const fetchConversations = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/chat/conversations/${user._id}`);
+                const res = await axios.get(`${API_BASE_URL}/api/chat/conversations/${user._id}`);
                 setContacts(res.data);
+
 
                 // If we navigated here with a contact, ensure they are in the list
                 if (location.state?.contactId) {
@@ -82,8 +85,9 @@ const Chat = () => {
 
         const fetchMessages = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/chat/messages/${user._id}/${activeContactId}`);
+                const res = await axios.get(`${API_BASE_URL}/api/chat/messages/${user._id}/${activeContactId}`);
                 setMessages(res.data);
+
             } catch (err) {
                 console.error("Error fetching messages:", err);
             }

@@ -3,7 +3,9 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { UploadCloud, CheckCircle, Loader, Sparkles, AlertTriangle, MapPin } from 'lucide-react';
 import axios from 'axios';
+import API_BASE_URL from '../api';
 import './CreatePost.css';
+
 
 // ========== AI Classifier Logic ==========
 const wasteKeywords = {
@@ -89,7 +91,8 @@ const CreatePost = () => {
                 payload.append('image', imageFile);
             }
 
-            await axios.post('http://localhost:5000/api/posts', payload, {
+            await axios.post(`${API_BASE_URL}/api/posts`, payload, {
+
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`

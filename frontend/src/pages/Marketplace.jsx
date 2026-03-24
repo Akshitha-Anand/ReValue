@@ -3,7 +3,9 @@ import { useAuth } from '../context/AuthContext';
 import { MessageSquare, MapPin, Scale, Filter, Search, Star, Eye, X, Calendar, Package } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../api';
 import './Marketplace.css';
+
 
 const categoryColors = { plastic: '#3b82f6', paper: '#f59e0b', metal: '#6b7280', ewaste: '#ef4444', glass: '#10b981' };
 
@@ -94,8 +96,9 @@ const Marketplace = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/posts');
+                const res = await axios.get(`${API_BASE_URL}/api/posts`);
                 // Backend might return nested objects. Ensure we have the list.
+
                 setPosts(res.data);
                 setFilteredPosts(res.data);
             } catch (err) {
