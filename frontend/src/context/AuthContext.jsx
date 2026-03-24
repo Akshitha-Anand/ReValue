@@ -46,10 +46,19 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('user', JSON.stringify(res.data.user));
             return { success: true };
         } catch (error) {
-            console.error("Registration failed:", error.response?.data?.message || error.message);
-            throw new Error(error.response?.data?.message || 'Registration failed');
+            console.error("Registration failed:", error);
+            if (error.response) {
+                // Server responded with an error
+                throw new Error(error.response.data?.message || `Server error: ${error.response.status}`);
+            } else if (error.request) {
+                // Request was sent but no response received (network/CORS issue)
+                throw new Error(`Cannot connect to server. Check if backend is running at: ${API_BASE_URL}`);
+            } else {
+                throw new Error(error.message || 'Registration failed');
+            }
         }
     };
+
 
     const logout = () => {
         setUser(null);
