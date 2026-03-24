@@ -4,27 +4,50 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const {
+            name, email, password, role, phone,
+            // Collector fields
+            collectorType, hubLocation, areasServed, materialsAccepted, vehicleType, operatingHours,
+            // Industry fields
+            industryType, contactPerson, gstin, companyWebsite, businessAddress, monthlyDemand, materialsRequired
+        } = req.body;
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User with this email already exists" });
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = new User({
-            name,
-            email,
+            name, email, phone, role,
             password: hashedPassword,
-            role
+            // Collector fields
+            ...(role === 'collector' ? { collectorType, hubLocation, areasServed, materialsAccepted, vehicleType, operatingHours } : {}),
+            // Industry fields
+            ...(role === 'industry' ? { industryType, contactPerson, gstin, companyWebsite, businessAddress, monthlyDemand, materialsRequired } : {}),
         });
 
         await user.save();
 
+        // Generate token (same as login)
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET || "revalue_secret_2025",
+            { expiresIn: "1d" }
+        );
+
         res.status(201).json({
-            message: "User registered successfully"
+            token,
+            user
         });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 exports.login = async (req, res) => {
     try {
