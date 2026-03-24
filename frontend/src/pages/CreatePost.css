@@ -1,0 +1,250 @@
+.create-post-page {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.post-form-wrapper {
+    padding: 2.5rem;
+}
+
+.post-form {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+}
+
+.form-left {
+    flex: 0 0 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-right {
+    flex: 1;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-2 {
+    flex: 2;
+}
+
+.image-upload-box {
+    display: block;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    height: 240px;
+    position: relative;
+    overflow: hidden;
+    background: rgba(15, 23, 42, 0.4);
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.image-upload-box:hover {
+    border-color: var(--accent-secondary);
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.upload-placeholder p {
+    font-size: 0.9rem;
+}
+
+.file-hint {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.image-upload-box:hover .preview-overlay {
+    opacity: 1;
+}
+
+/* AI Box */
+.ai-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+.ai-box.loading {
+    background: rgba(14, 165, 233, 0.1);
+    border: 1px solid rgba(14, 165, 233, 0.25);
+    color: var(--accent-secondary);
+}
+
+.ai-box.success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.ai-icon {
+    font-size: 1.5rem;
+}
+
+.ai-title {
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ai-sub {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.confidence-bar-wrap {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin: 0.4rem 0;
+}
+
+.confidence-bar {
+    height: 100%;
+    background: var(--accent-primary);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.category-tip {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.spin {
+    animation: rotate 1.5s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.submit-btn {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Success Screen */
+.success-screen {
+    padding: 4rem 3rem;
+    text-align: center;
+    max-width: 420px;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.success-screen h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.success-screen p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.loader-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.loader-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--accent-gradient);
+    animation: load-slide 2s ease forwards;
+}
+
+@keyframes load-slide {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 800px) {
+    .post-form {
+        flex-direction: column;
+    }
+
+    .form-left {
+        flex: 1;
+        width: 100%;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

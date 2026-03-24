@@ -1,64 +1,59 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-const verifyIndustry = require("../utils/verifyIndustry");
+const jwt = require("jsonwebtoken");
 
-exports.registerUser = async (req, res) => {
-
+exports.register = async (req, res) => {
     try {
-
-        const {
-            name,
-            email,
-            password,
-            phone,
-            role,
-            address,
-            collectorType,
-            industryName,
-            hubLocation
-        } = req.body;
+        const { name, email, password, role } = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let verified = false;
-
-        if (role === "industry") {
-
-            verified = verifyIndustry(industryName);
-
-            if (!verified) {
-                return res.status(400).json({
-                    message: "Industry verification failed"
-                });
-            }
-        }
-
         const user = new User({
-
             name,
             email,
             password: hashedPassword,
-            phone,
-            role,
-            address,
-            collectorType,
-            industryName,
-            hubLocation,
-            verified
+            role
         });
 
         await user.save();
 
+        res.status(201).json({
+            message: "User registered successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
         res.json({
-            message: "User registered successfully",
+            token,
             user
         });
 
-    } catch (err) {
-
-        res.status(500).json({
-            message: err.message
-        });
-
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };

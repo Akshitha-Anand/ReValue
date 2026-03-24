@@ -7,6 +7,8 @@ const http = require("http");
 
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
+const feedRoutes = require("./routes/feedRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 const Chat = require("./models/Chat");
 const User = require("./models/User");
@@ -19,10 +21,12 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/feed", feedRoutes);
+app.use("/api/chat", chatRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
-.then(()=>console.log("MongoDB connected"))
-.catch(err=>console.log(err));
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.log(err));
 
 const server = http.createServer(app);
 
@@ -77,7 +81,7 @@ io.on("connection", socket => {
 
         const receiverSocket = onlineUsers[receiverId];
 
-        if(receiverSocket){
+        if (receiverSocket) {
 
             io.to(receiverSocket).emit("receiveMessage", chat);
 
@@ -86,11 +90,11 @@ io.on("connection", socket => {
     });
 
 
-    socket.on("disconnect", ()=>{
+    socket.on("disconnect", () => {
 
-        for(let userId in onlineUsers){
+        for (let userId in onlineUsers) {
 
-            if(onlineUsers[userId] === socket.id){
+            if (onlineUsers[userId] === socket.id) {
 
                 delete onlineUsers[userId];
 
@@ -104,6 +108,6 @@ io.on("connection", socket => {
 });
 
 
-server.listen(5000, ()=>{
+server.listen(5000, () => {
     console.log("Server running on port 5000");
 });
